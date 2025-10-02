@@ -1,14 +1,17 @@
+version: "3.8"
+
 services:
   telegram-bot:
-    image: python:3.11
+    build:
+      context: .   # Build from root folder where Dockerfile is
     container_name: telegram-bot
     working_dir: /app
     volumes:
-      - ./samueluyyt-tg-toolkit:/app
-      - ./samueluy-docker-n8n-bot/.env:/app/.env
+      - ./:/app   # Mount root folder as /app
     command: python bot.py
     env_file:
       - .env
+    restart: always
 
   n8n:
     image: n8nio/n8n:latest
@@ -17,4 +20,9 @@ services:
       - "5678:5678"
     env_file:
       - .env
+    volumes:
+      - n8n_data:/home/node/.n8n
     restart: always
+
+volumes:
+  n8n_data:
